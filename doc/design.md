@@ -1,25 +1,25 @@
 # Design considerations for TreeShift
 
 The coding challenge seems pretty straightforward at first, but with some subtleties. In a normal development
-situation, I would ask questions about expected data sizes, tree width and depth, et cetera – but for the
+situation, I would ask questions about expected data sizes, tree width and depth, etc — but for the
 challenge, I believe it's appropriate to choose some constraints based on (documented) assumptions, of course
 with some notes on alternatives for other magnitudes of data.
 
 ## Data structure
 
-The assignment mentions "*We have a root node (only one)*", but requirement #3 specifices each node must
+The assignment mentions "*We have a root node (only one)*", but requirement #3 specifies that each node must
 record "*who is the root node*". I'm choosing to interpret this as the data structure being a collection of
-directed acyclic graphs, rather than a single huge tree. This affects the solution - e.g. it would infeasible
+directed acyclic graphs, rather than a single huge tree. This affects the solution — e.g. it would infeasible
 to construct an entire in-memory graph of one huge tree before serving it to the client, but it's a realistic
-scenario if we're dealing with a multitude of largeish trees. Also, depicting a large company with several
+scenario if we're dealing with a multitude of largish trees. Also, depicting a large company with several
 business units and geographical locations as a forest seems reasonable.
 
 ## Persistence
 
 I'm choosing [PostgreSQL](https://spring.io/projects/spring-boot) as persistence layer. A relational database
 might not be the best fit for a DAG, but it works, and I have experience with it. It has some implications on
-performance - it's not easy to scale a relational database horizontally, manual sharding strategies easily
-become complex and hard to maintain. And by choosing a database, most of the processing will be done in SQL
+performance — it's not easy to scale a relational database horizontally, manual sharding strategies easily
+become complex and hard to maintain. Also, by choosing a database, most of the processing will be done in SQL
 queries instead of application code. The advantages are that PostgreSQL is battle-tested, performs decently,
 and that SQL is a well-known language.
 
@@ -76,7 +76,7 @@ An alternate method is to return a list of unstructured nodes to the client:
 }, ...]
 ```
 
-This data format is very simple to handle for the back-end - it doesn't need to do any processing except
+This data format is very simple to handle for the back-end — it doesn't need to do any processing except
 per-node serialization/deserialization, and it can stream the results to the client rather than keeping the
 entire resultset in memory. 
 
@@ -91,7 +91,7 @@ Changing the parent node of a given node (shifting a subtree), "*the given node 
 structure*". I'm adding the constraint that the new parent node cannot be a descendant of the given node, as
 that would create a cycle in the graph. If we were to allow moving a node to one of its descendant nodes,
 we could walk up the tree until we find the node whose parent node is our source node, and update that node to
-be our source node's parent, to avoid creating a cycle. But considering we're modelling an organization, that
+be our source node's parent, to avoid creating a cycle. Considering we're modelling an organization, that
 kind of restructure seems a bit odd, and I believe that "*can't set a descendant as parent*" is a reasonable
 constraint.
 
@@ -99,13 +99,13 @@ Performing the constraint check can be computationally heavy, but a couple of op
 the happy path: if `source.root != target.root` (different trees) or `source.depth <= target.depth` (target is
 parent or sibling), the expensive check can be avoided.
 
-Finally, depth (and possibly root) has to be updated for the entire subtree. And the operations have to be
-done atomatically, since there could be concurrent attempts at modifying parts of the same tree.
+Finally, depth (and possibly root) has to be updated for the entire subtree. Also, the operations have to be
+done atomically, since there could be concurrent attempts at modifying parts of the same tree.
 
 ## Choice of technology
 
-Java was chosen as the programming language, since **Amazing Co** runs on the JVM, and everybody knows Java.
-Version 11 was chosen, since it's the current Long Term Support version.
+Java has been chosen as the programming language, since **Amazing Co** runs on the JVM, and everybody knows
+Java. Version 11 was selected, since it's the current Long Term Support version.
 [Spring Boot](https://spring.io/projects/spring-boot) was chosen for the framework, since I'm familiar with it,
 and it's an industry standard. For lower overhead and being able to quickly react to heavy load, perhaps a
 mix of [Quarkus](https://quarkus.io) and [Vert.x](https://vertx.io/) would be worth pursuing.
