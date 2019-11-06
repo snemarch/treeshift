@@ -1,8 +1,17 @@
 package com.amazing.treeshift.model;
 
 import javax.persistence.*;
-import java.util.Objects;
 
+/***
+ * Database entity class for the Awesome Company organisational unit.
+ *
+ * The organisational units form a directed acyclic graph (simple tree), and
+ * are stored in a single database using a parentId -> id relation. It is
+ * defined as a simple type with primitive values, since we're relying on native
+ * SQL queries and not using advanced mapping capabilities of the data layer.
+ *
+ * Only necessary setters have been added.
+ */
 @Entity
 @Table(name = "org_units")
 public class OrgUnit {
@@ -36,16 +45,7 @@ public class OrgUnit {
 		return parentId;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		OrgUnit orgUnit = (OrgUnit) o;
-		return id == orgUnit.id;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+	public void setParentId(long id) {
+		this.parentId = id;
 	}
 }

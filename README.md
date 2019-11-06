@@ -26,6 +26,24 @@ structure is simple enough I'll leave out migrations (e.g. [Flyway](https://flyw
 a number of infrastructure concerns, such as continuous deployment pipeline, scaling, and secrets management
 (i.e. there will be hardcoded database credentials).
 
+## TODO
+
+* Hierarchical JSON get-org-units endpoint. Can't seem to get Hibernate to cooperate with this when doing a
+  native query with recursive select, so perhaps do manual Java code for mapping? Would be useful for quick
+  visual overview of data.
+* Better error handling. Throw business logic exceptions, don't leak exceptions to HTTP clients. Probably add
+  sl4fj and log errors. 
+* Integration tests — unit tests don't make much sense for this project. Split conf in base+dev/test. 
+* Add timing traces to reply HTTP headers.
+* Endpoint for generating a large amount of test data. Large number of trees, fair amount of width+depth.
+  Use a PRNG with static seed so test results are reproducible. 
+* Package the application as Docker image, add to docker-compose.yml. Should probably integrate with Gradle
+  build, but can do Dockerfile and shell script if pressed for time.
+* Document endpoints. Perhaps Swagger annotations or a yaml, perhaps just text here since they're simple.
+* Index on OrgUnit.parentId?
+* Index on OrgUnit.rootId? — probably a good idea to make a partial index on `(parentId = null)`, so tree
+  roots can quickly be returned, but without creating a huge index we don't need.
+
 ## Authors
 
 * **Sune Marcher** - [snemarch](https://github.com/snemarch)
