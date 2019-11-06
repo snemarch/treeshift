@@ -2,7 +2,7 @@ package com.amazing.treeshift.model;
 
 import javax.persistence.*;
 
-/***
+/**
  * Database entity class for the Awesome Company organisational unit.
  *
  * The organisational units form a directed acyclic graph (simple tree), and

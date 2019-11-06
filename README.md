@@ -28,9 +28,6 @@ a number of infrastructure concerns, such as continuous deployment pipeline, sca
 
 ## TODO
 
-* Hierarchical JSON get-org-units endpoint. Can't seem to get Hibernate to cooperate with this when doing a
-  native query with recursive select, so perhaps do manual Java code for mapping? Would be useful for quick
-  visual overview of data.
 * Better error handling. Throw business logic exceptions, don't leak exceptions to HTTP clients. Probably add
   sl4fj and log errors. 
 * Integration tests — unit tests don't make much sense for this project. Split conf in base+dev/test. 

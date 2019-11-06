@@ -1,10 +1,14 @@
 package com.amazing.treeshift.service;
 
+import com.amazing.treeshift.model.OrgUnit;
+import com.amazing.treeshift.model.TreeOrgUnit;
 import com.amazing.treeshift.repository.OrgUnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.HashMap;
 
 @Component
 public class OrgUnitServiceImpl implements OrgUnitService {
@@ -51,5 +55,32 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 			// design and speed.
 			repository.adjustSubtreeRootAndHeight(id, newParent.getRootId(), heightDifference);
 		}
+	}
+
+	@Override
+	public TreeOrgUnit buildTreeFromNodes(long rootId, Collection<OrgUnit> nodes) {
+		// The input collection can be in any random order, we can make no assumption on getting nodes sorted
+		// by depth, breadth or anything else. We track "seen" nodes by their id — this can be from first-seen
+		// occurrence when iterating over the node, or by a parentId reference from another node.
+		// O(n) complexity as long as hashmap is O(1) amortized.
+		var seen = new HashMap<Long, TreeOrgUnit>(nodes.size());
+
+		TreeOrgUnit root = null;
+		for (var node : nodes) {
+			var treeNode = seen.computeIfAbsent(node.getId(), id -> new TreeOrgUnit(id));
+			treeNode.setRootId(node.getRootId());
+			treeNode.setHeight(node.getHeight());
+
+			if (node.getParentId() != null) {
+				var parent = seen.computeIfAbsent(node.getParentId(), id -> new TreeOrgUnit(id));
+				parent.getChildren().add(treeNode);
+			}
+
+			if (node.getId() == rootId) {
+				root = treeNode;
+			}
+		}
+
+		return root;
 	}
 }
