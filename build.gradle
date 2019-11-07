@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
+	id 'com.google.cloud.tools.jib' version '1.7.0'
 }
 
 group = 'com.amazing'
@@ -19,13 +20,35 @@ repositories {
 	mavenCentral()
 }
 
+def runenv = version.endsWith('SNAPSHOT') ? 'dev' : 'prod'
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	if(runenv == 'dev') {
+		// jib doesn't support filtering dependencies, make sure we don't include devtools in non-dev builds.
+		developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	}
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+
+jib {
+	from.image = 'gcr.io/distroless/java:11' // java:debug if you want /busybox/sh
+
+	to {
+		image = 'awesomeco/treeshift'
+		tags += (runenv == 'dev') ? 'dev' : version
+	}
+
+	container {
+		jvmFlags = ["-Dspring.profiles.active=${runenv}".toString() ] // GString -> java String or crash
+		creationTime = 'USE_CURRENT_TIMESTAMP' // for build server release builds, use timestamp from git tag
 	}
 }
 

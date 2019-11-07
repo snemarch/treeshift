@@ -13,8 +13,23 @@ trees, if you will. TreeShift is a microservice that provides HTTP endpoints for
 
 Prerequisites: Java 11, Gradle (or use the Gradle wrapper), Docker, Docker Compose.
 
-Build with Gradle, do initial setup by running *foo*, perform integration tests by doing *bar*, and see *qux*
-for generating a large amount of data in order to do performance measurements.
+Getting up and running by running the following commands: 
+
+```
+./gradlew jibDockerBuild
+docker-compose up
+```
+
+This will build the Spring Boot project, build a Docker image tagged as `awesomeco/treeshift:latest`, and
+spin up docker containers for the database and the application. The application exposes services on port 9000,
+and the database is exposed on port 5432.
+
+For development, run `./gradlew bootRun --args='--spring.profiles.active=local'`. This will start the
+application in development mode, exposed on port 8080. Spring Boot DevTools are enabled, so performing a
+build in your IDE should trigger an application reload. 
+
+Perform integration tests by doing *bar*, and see *qux* for generating a large amount of data in order to do
+performance measurements.
 
 Further documentation, including design considerations, is located in the **docs** directory.
 
@@ -34,8 +49,6 @@ a number of infrastructure concerns, such as continuous deployment pipeline, sca
 * Add timing traces to reply HTTP headers.
 * Endpoint for generating a large amount of test data. Large number of trees, fair amount of width+depth.
   Use a PRNG with static seed so test results are reproducible. 
-* Package the application as Docker image, add to docker-compose.yml. Should probably integrate with Gradle
-  build, but can do Dockerfile and shell script if pressed for time.
 * Document endpoints. Perhaps Swagger annotations or a yaml, perhaps just text here since they're simple.
 * Index on OrgUnit.parentId?
 * Index on OrgUnit.rootId? — probably a good idea to make a partial index on `(parentId = null)`, so tree
