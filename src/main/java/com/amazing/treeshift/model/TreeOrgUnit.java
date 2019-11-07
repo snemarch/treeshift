@@ -3,7 +3,7 @@ package com.amazing.treeshift.model;
 import java.util.*;
 
 /**
- * Object model class for the Awesome Company organisational unit.
+ * Object model class for the Amazing Company organisational unit.
  * <p>
  * Decoupled from the database entity model, has a proper tree structure, expected to be used in collections
  * like hashmaps, and as data transfer objects.

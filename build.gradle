@@ -44,7 +44,7 @@ jib {
 	from.image = 'gcr.io/distroless/java:11' // java:debug if you want /busybox/sh
 
 	to {
-		image = 'awesomeco/treeshift'
+		image = 'amazingco/treeshift'
 		tags += (runenv == 'dev') ? 'dev' : version
 	}
 

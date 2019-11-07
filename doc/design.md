@@ -14,9 +14,11 @@ to construct an entire in-memory graph of one huge tree before serving it to the
 scenario if we're dealing with a multitude of largish trees. Also, depicting a large company with several
 business units and geographical locations as a forest seems reasonable.
 
+I have modelled the node structure as `(id, parent_id, root_id, height)`, directly based on the requirements. 
+
 ## Persistence
 
-I'm choosing [PostgreSQL](https://spring.io/projects/spring-boot) as persistence layer. A relational database
+I'm choosing [PostgreSQL](https://www.postgresql.org) as persistence layer. A relational database
 might not be the best fit for a DAG, but it works, and I have experience with it. It has some implications on
 performance — it's not easy to scale a relational database horizontally, manual sharding strategies easily
 become complex and hard to maintain. Also, by choosing a database, most of the processing will be done in SQL
@@ -25,7 +27,7 @@ and that SQL is a well-known language.
 
 If the scope were a real-world project with extreme scalability requirements, I would do research on alternate
 persistence systems. A project like [Dgraph](https://dgraph.io/), for instance, sounds like it could be pretty
-interesting.
+interesting: it's designed for graphs, and it's distributed.
 
 ## Services / Endpoints
 
@@ -110,10 +112,26 @@ Java. Version 11 was selected, since it's the current Long Term Support version.
 and it's an industry standard. For lower overhead and being able to quickly react to heavy load, perhaps a
 mix of [Quarkus](https://quarkus.io) and [Vert.x](https://vertx.io/) would be worth pursuing.
 [Gradle](https://gradle.org/) was chosen as build tool, it's well-known and reasonably pleasant to work with.
+For building the application Docker image, I'm using [Jib](https://github.com/GoogleContainerTools/jib/) by
+Google, it's fast and integrates nicely with Gradle. 
 
 ## Miscellaneous
 
 Having some timing information available could be useful for determining bottlenecks. Instead of measuring
 with a profiler (which can be hard to do in production, or in any kind of distributed system), I plan to
-always do the relevant timing in program code. To reduce overhead, rather than writing timing information to
-a log file, I plan to add it as X-*Something* HTTP headers.
+always do the relevant timing in program code. To reduce overhead (disk space as well as I/O overhead), rather
+than writing timing information to a log file, I plan to add it as X-*Something* HTTP headers.
+
+If the recursive queries with common table expressions are too slow, performance could probably be improved by
+introducing *materialized paths*. I've never implemented this, but postgres supports arrays and array 
+operations — the materialized path could be stored as int8 array (i.e. we can use the node ids for the path
+without doing string concatenation), and it seems possible to do path computation directly with SQL, instead
+of processing all nodes manually on a tree move. This would probably be very fast (simple prefix select on
+indexed column vs recursion), but has the tradeoff of requiring a fair amount of extra storage, and slower
+tree moves. The speed tradeoff sounds decent, considering the expected use case of the system to be read-heavy
+with seldom writes.
+
+Finding tree roots in the forest is done by `select * from org_units where parent_id is null;`. I haven't yet
+tested if we need an index on parent_id to speed up the recursive query, but in case we don't, a full index on
+parent_id seems waste. In that case, we could use a postgres partial index to speed up root-finding:
+`create index idx_tree_roots on org_units(parent_id) where parent_id is null;`. 
