@@ -16,7 +16,8 @@ import javax.persistence.*;
 @Table(name = "org_units")
 public class OrgUnit {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// We need to be able to manually specify the id, see note in OrgUnitServiceImpl.persistTree.
 	@Column(name = "id")
 	private long id;
 
@@ -28,6 +29,16 @@ public class OrgUnit {
 
 	@Column(name = "parent_id")
 	private Long parentId;
+
+	public OrgUnit() {
+	}
+
+	public OrgUnit(long id, long rootId, long height, Long parentId) {
+		this.id = id;
+		this.rootId = rootId;
+		this.height = height;
+		this.parentId = parentId;
+	}
 
 	public long getId() {
 		return id;

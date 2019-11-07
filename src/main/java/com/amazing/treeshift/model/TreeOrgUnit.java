@@ -12,7 +12,16 @@ public class TreeOrgUnit {
 	private long id;
 	private long rootId;
 	private long height;
+	private Long parentId;
+
 	private List<TreeOrgUnit> children = new ArrayList<>();
+
+	public TreeOrgUnit() {
+	}
+
+	public TreeOrgUnit(long id) {
+		this.id = id;
+	}
 
 	public void setRootId(long rootId) {
 		this.rootId = rootId;
@@ -22,8 +31,8 @@ public class TreeOrgUnit {
 		this.height = height;
 	}
 
-	public TreeOrgUnit(long id) {
-		this.id = id;
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 	public long getId() {
@@ -36,6 +45,10 @@ public class TreeOrgUnit {
 
 	public long getHeight() {
 		return height;
+	}
+
+	public Long getParentId() {
+		return parentId;
 	}
 
 	public List<TreeOrgUnit> getChildren() {

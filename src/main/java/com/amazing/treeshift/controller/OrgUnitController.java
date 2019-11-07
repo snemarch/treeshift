@@ -7,7 +7,7 @@ import com.amazing.treeshift.service.OrgUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -36,5 +36,10 @@ public class OrgUnitController {
 	@GetMapping(path = "/org-units/{id}/is-descendant-of/{parentId}")
 	public boolean isDescendantOf(@PathVariable long id, @PathVariable long parentId) {
 		return ouRepository.isNodeDescendantOf(parentId, id);
+	}
+
+	@PostMapping(path = "/org-units/import-tree")
+	public Long importJson(@RequestBody TreeOrgUnit tree) {
+		return ouService.persistTree(tree);
 	}
 }

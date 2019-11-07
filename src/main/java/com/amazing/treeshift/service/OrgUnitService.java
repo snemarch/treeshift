@@ -29,4 +29,16 @@ public interface OrgUnitService {
 	 * @return the tree representation of the organisational unit subtree
 	 */
 	TreeOrgUnit buildTreeFromNodes(long parentId, Collection<OrgUnit> nodes);
+
+	/**
+	 * Persists a tree structure.
+	 *
+	 * Note that ids, parentIds etc are used <b>as-is</b>, with no validation whatsoever — this a low-level
+	 * method intended to be used for imports for debug purposes. Should not be present in a production app!
+	 *
+	 * @param tree the tree of organisational units to be persisted
+	 * @return id of the root node
+	 */
+	@Transactional
+	Long persistTree(TreeOrgUnit tree);
 }
