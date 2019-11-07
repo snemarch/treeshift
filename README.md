@@ -43,8 +43,6 @@ a number of infrastructure concerns, such as continuous deployment pipeline, sca
 
 ## TODO
 
-* Better error handling. Throw business logic exceptions, don't leak exceptions to HTTP clients. Probably add
-  sl4fj and log errors. 
 * Integration tests — unit tests don't make much sense for this project. Split conf in base+dev/test. 
 * Add timing traces to reply HTTP headers.
 * Endpoint for generating a large amount of test data. Large number of trees, fair amount of width+depth.
@@ -53,6 +51,7 @@ a number of infrastructure concerns, such as continuous deployment pipeline, sca
 * Index on OrgUnit.parentId?
 * Index on OrgUnit.rootId? — probably a good idea to make a partial index on `(parentId = null)`, so tree
   roots can quickly be returned, but without creating a huge index we don't need.
+* Throw business logic exceptions instead of IllegalArgumentException.
 
 ## Authors
 
