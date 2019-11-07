@@ -35,7 +35,7 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 			.orElseThrow(() -> new IllegalArgumentException("Target parent doesn't exist"));
 
 		var differentTree = movingNode.getRootId() != newParent.getRootId();
-		var noChildOfMine = movingNode.getHeight() <= newParent.getHeight();
+		var noChildOfMine = movingNode.getHeight() >= newParent.getHeight();
 
 		if (!(differentTree || noChildOfMine)) {
 			// There's a possibility we're trying to move a node to one of its descendants.
