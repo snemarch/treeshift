@@ -1,11 +1,11 @@
 # Project status for TreeShift
 
-TreeShift is "mostly done". It should fulfill the requirements of the coding challenge, but it's not entirely
-in the state I'd like it to be. A prioritized list of known issues follows below.  
+TreeShift is "mostly done". It should fulfill the requirements of the coding challenge, but it's not
+*entirely* in the state I'd like it to be. A prioritized list of known issues follows below.  
 
 ## TODO
 
-* Integration tests — unit tests don't make much sense for this project, but integration tests do. 
+* Better integration tests — the current ones are pretty rudimentary. 
 * Endpoint for generating a large amount of test data. Large number of trees, fair amount of width+depth.
   Random tree shapes. Use a PRNG with static seed so test results are reproducible. 
 * Add timing traces to reply HTTP headers.

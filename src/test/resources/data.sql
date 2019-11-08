@@ -16,3 +16,6 @@ insert into org_units (id, root_id, height, parent_id) values(1210, 0, 4, 121)
 insert into org_units (id, root_id, height, parent_id) values(1211, 0, 4, 121)
 insert into org_units (id, root_id, height, parent_id) values(1212, 0, 4, 121)
 insert into org_units (id, root_id, height, parent_id) values(1213, 0, 4, 121)
+
+-- other tree
+insert into org_units (id, root_id, height, parent_id) values(1000, 1000, 0, null)

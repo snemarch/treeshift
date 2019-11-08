@@ -25,7 +25,7 @@ public class OrgUnitServiceImpl implements OrgUnitService {
 		var movingNode = repository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("Source node doesn't exist"));
 
-		if (movingNode.getParentId() == newParentId) {
+		if (movingNode.getParentId() != null && movingNode.getParentId() == newParentId) {
 			// We're not really moving the node if we're specifying its existing parent as the destination.
 			// Not actually doing a move, but state is valid — do a successful early-out instead of throwing.
 			return;
