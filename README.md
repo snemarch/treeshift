@@ -34,8 +34,9 @@ spin up docker containers for the database and the application. The application 
 and the database accepts connections on port 5432.
 
 For development, run `./gradlew bootRun --args='--spring.profiles.active=local'`. This will start the
-application in development mode, exposed on port 8080. Spring Boot DevTools are enabled, so performing a
-build in your IDE should trigger an application reload.
+application in development mode, exposed on port 8080. Be sure to define your development version ending in
+"-SNAPSHOT" in `build.gradle`. This enables Spring Boot DevTools, so performing a build in your IDE triggers
+an application reload.
 
 Perform integration tests by doing `./gradlew cleanTest test`, which will print test results to the console as
 well as generate a report in `build/reports/tests/test/index.html`.
